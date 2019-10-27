@@ -1,4 +1,9 @@
+# python dev
 __pycache__/
 .idea
 
+# links
+xtools/
+
+# internals
 results/
