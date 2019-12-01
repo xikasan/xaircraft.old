@@ -3,7 +3,7 @@ __pycache__/
 .idea
 
 # links
-xtools/
+xtools
 
 # internals
 results/
