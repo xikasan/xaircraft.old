@@ -5,7 +5,7 @@ import pandas as pd
 import xtools as xt
 import xtools.simulation as xs
 from matplotlib import pyplot as plt
-from xaircraft.models.csurface import CSurface
+from xaircraft.models.csurface import CSurface, FailMode
 
 
 def test_CSurface():
@@ -16,7 +16,8 @@ def test_CSurface():
     due = 10.0
 
     # model
-    surface = CSurface(dt)
+    surface = CSurface(dt, gain=1.0, tau=0.1)
+    surface.reset()
     xt.debug("CSurface", surface)
     action = 2.0
 
@@ -26,8 +27,10 @@ def test_CSurface():
     xt.debug("log", log)
 
     for t in xs.generate_step_time(due, dt):
-        if (int(t*100) % 200) == 0:
+        if (int(t*100) % 100) == 0:
             action *= -1
+        if t == 5:
+            surface.set_fail_mode(FailMode.DELAY, 3.0)
         obs = surface(action)
         log.add(time=t, command=action, deflection=obs)
 

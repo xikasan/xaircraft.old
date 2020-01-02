@@ -15,5 +15,23 @@ def test_DelayBuffer():
         print("input", t, "->", "output", r)
 
 
+def test_DelayBuffer_get_buf():
+    bf = DelayBuffer(5)
+    xt.debug("DelayBuffer", bf)
+
+    for step in range(15):
+        xt.info("step", step)
+        if step == 4:
+            print("-"*30)
+            break
+        r = bf(step)
+        print("input", step, "output", r)
+
+    xt.debug("buffer", bf._buf)
+    xt.debug("index", bf._index)
+    xt.info("buffer", bf.buffer())
+
+
 if __name__ == '__main__':
-    test_DelayBuffer()
+    # test_DelayBuffer()
+    test_DelayBuffer_get_buf()

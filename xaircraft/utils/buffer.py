@@ -30,3 +30,7 @@ class DelayBuffer:
     def get_newest(self):
         return self._buf[self._index]
 
+    def buffer(self):
+        buf = [self._buf[self._index:], self._buf[:self._index]]
+        return np.concatenate(buf, axis=0)
+

@@ -55,7 +55,7 @@ class LVAircraftPitch(BaseEnv):
     def reset(self):
         self._elevator.reset()
         self._throttle.reset()
-        return 0
+        return self.get_obs()
 
     def step(self, action):
         action = self.clip_action(action)
