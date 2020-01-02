@@ -21,7 +21,7 @@ class LVAircraftPitch(BaseEnv):
         self._elevator = CSurface(
             dt,
             gain=0.67,
-            tau=0.12,
+            tau=0.02,
             delay=0.06,
             deflection_range=xt.d2r([-20, 20]),
             speed_range=xt.r2d([-40, 40]),
