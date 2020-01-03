@@ -50,6 +50,7 @@ class CSurface(BaseModel):
 
         # state
         self._state = None
+        self._dx = None
         self._init_state = initial_state
         self._buf = DelayBuffer(self._delay_step)
         # fail mode
@@ -79,8 +80,8 @@ class CSurface(BaseModel):
         dx = xs.no_time_rungekutta(fn, self.dt, self._state)
         dx_range = self._speed_range if not fmode == FailMode.RATE_LIMITATION \
             else self._speed_range * fmode.get_val()
-        dx = np.clip(dx, *dx_range)
-        next_state = self._state + dx * self.dt
+        self._dx = np.clip(dx, *dx_range)
+        next_state = self._state + self._dx * self.dt
         obs_factor = 1.0 if not fmode == FailMode.SATURATION \
             else fmode.get_val()
         self._state = np.clip(next_state, self._obs_low * obs_factor, self._obs_high * obs_factor)
@@ -88,10 +89,14 @@ class CSurface(BaseModel):
 
     def reset(self):
         self._state = self._init_state
+        self._dx = self._init_state * 0.0
         self._buf.reset()
 
     def get_obs(self):
         return self._state
+
+    def get_full_state(self):
+        return xt.as_ndarray([self._state, self._dx])
 
     def set_fail_mode(self, mode, val=None):
         if val is not None:
