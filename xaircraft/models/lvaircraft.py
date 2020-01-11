@@ -6,7 +6,7 @@ import xtools.simulation as xs
 from xaircraft.models.base import BaseModel
 
 
-class LVAircraft(BaseModel):
+class LVAircraft(xs.BaseModel):
 
     def __init__(
             self,

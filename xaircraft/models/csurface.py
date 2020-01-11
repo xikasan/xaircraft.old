@@ -28,7 +28,7 @@ class FailMode(Enum):
         return self._mag
 
 
-class CSurface(BaseModel):
+class CSurface(xs.BaseModel):
 
     def __init__(
             self,
