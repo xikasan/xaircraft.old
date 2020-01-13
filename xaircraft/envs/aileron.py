@@ -52,3 +52,6 @@ class MuPAL_Aileron(BaseEnv):
 
     def get_obs(self):
         return self._dynamics.get_obs()
+
+    def get_full_state(self):
+        return self._dynamics.get_full_state()
