@@ -17,7 +17,7 @@ class MuPAL_Aileron(BaseEnv):
         super().__init__(dt, name=name)
 
         state_range = xt.as_ndarray([-10, 10])
-        speed_range = xt.as_ndarray([-20, 20])
+        speed_range = xt.as_ndarray([-40, 40])
         state_range = state_range if use_degree else xt.d2r(state_range)
 
         self._dynamics = CSurface(
