@@ -99,6 +99,7 @@ class CSurface(xs.BaseModel):
         self._state = self._init_state
         self._dx = self._init_state * 0.0
         self._buf.reset()
+        self._fail_mode = FailMode.NORMAL
 
     def get_obs(self):
         return self._state
@@ -116,6 +117,9 @@ class CSurface(xs.BaseModel):
             self._buf = DelayBuffer(self._delay_step, init_value=self._buf.get_newest())
             for bf in old_buf:
                 self._buf(bf)
+
+    def get_fail_mode(self):
+        return self._fail_mode
 
 
 if __name__ == '__main__':

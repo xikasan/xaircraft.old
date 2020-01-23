@@ -55,3 +55,9 @@ class MuPAL_Aileron(BaseEnv):
 
     def get_full_state(self):
         return self._dynamics.get_full_state()
+
+    def set_fail_mode(self, mode, value=None):
+        self._dynamics.set_fail_mode(mode, value)
+
+    def get_fail_mode(self):
+        return self._dynamics.get_fail_mode()
