@@ -27,6 +27,14 @@ class FailMode(Enum):
     def get_val(self):
         return self._mag
 
+    @classmethod
+    def get_mode(cls, mode):
+        mode = mode.upper()
+        for key, fail in cls.__members__.items():
+            if key == mode:
+                return fail
+        raise ValueError("Not defined mode name {} is given.".format(mode))
+
 
 class CSurface(xs.BaseModel):
 
@@ -108,3 +116,7 @@ class CSurface(xs.BaseModel):
             self._buf = DelayBuffer(self._delay_step, init_value=self._buf.get_newest())
             for bf in old_buf:
                 self._buf(bf)
+
+
+if __name__ == '__main__':
+    FailMode.get_mode("SATURATION")
