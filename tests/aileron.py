@@ -6,6 +6,7 @@ import xtools as xt
 import xtools.simulation as xs
 from matplotlib import pyplot as plt
 from xaircraft.envs.aileron import MuPAL_Aileron
+from xaircraft.models.csurface import FailMode
 
 
 def test_MuLAP_Aileron():
@@ -13,6 +14,9 @@ def test_MuLAP_Aileron():
 
     dt = 0.02
     due = 10.0
+
+    mode = FailMode.GAIN_REDUCTION
+    fval = 0.1
 
     aileron = MuPAL_Aileron(dt, use_degree=True)
     aileron.reset()
@@ -30,6 +34,8 @@ def test_MuLAP_Aileron():
     for time in xs.generate_step_time(due, dt):
         if (int(time*100) % 100) == 0:
             action *= -1.0
+        if (int(time*100) % 500) == 0:
+            aileron.set_fail_mode(mode, fval)
         obs_ = aileron.step(action)
         print("time:", time, "\t command:", action, "\t aileron:", obs_)
         logger.add(time=time, command=action, aileron=obs_)
