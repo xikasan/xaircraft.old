@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import gym
+import xaircraft
 import numpy as np
 import pandas as pd
 import xtools as xt
@@ -90,5 +92,50 @@ def test_LVAircraft_Altitude_Env():
     plt.show()
 
 
+def test_LVAircraft_Altitude_GymEnv():
+    xt.info("test for LVAir Alt gym registration")
+
+    dt = 0.1
+    due = 60
+
+    env = gym.make("LVAircraftAltitude-v0", dt=dt)
+    xt.info("env", env)
+
+    Kp = -0.001
+
+    rb = xsim.ReplayBuffer({
+        "time": 1,
+        "obs": env.observation_size,
+        "reward": 1
+    }, capacity=int(due / dt + 1))
+
+    obs = env.reset()
+    rb.add(time=0, obs=obs, reward=env.calc_reward(obs))
+
+    for time in xsim.generate_step_time(due, dt):
+        H  = obs[env.IX_H]
+        Hc = obs[env.IX_C]
+        er = Hc - H
+        de = er * Kp
+        ds = np.array([0, de])
+        obs, reward, _, _ = env.step(ds)
+
+        rb.add(time=time, obs=obs, reward=reward)
+
+    result = xsim.Retriever(rb.buffer())
+    result = pd.DataFrame({
+        "time": result("time"),
+        "command":  result("obs", idx=env.IX_C),
+        "altitude": result("obs", idx=env.IX_H),
+        "reward":   result("reward")
+    })
+
+    fig, axes = plt.subplots(nrows=2, sharex=True)
+    result.plot(x="time", y=["command", "altitude"], ax=axes[0])
+    result.plot(x="time", y="reward", ax=axes[1])
+    plt.show()
+
+
 if __name__ == '__main__':
-    test_LVAircraft_Altitude_Env()
+    # test_LVAircraft_Altitude_Env()
+    test_LVAircraft_Altitude_GymEnv()
