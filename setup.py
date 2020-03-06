@@ -11,7 +11,7 @@ with open('LICENSE') as f:
 
 setup(
     name='xaircraft',
-    version='0.1.0',
+    version='0.2.0',
     description="aircraft model and env set",
     long_description=readme,
     author='xikasan',
