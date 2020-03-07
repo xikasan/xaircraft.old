@@ -96,7 +96,7 @@ def test_LVAircraft_Altitude_GymEnv():
     xt.info("test for LVAir Alt gym registration")
 
     dt = 0.1
-    due = 60
+    due = 100
 
     env = gym.make("LVAircraftAltitude-v0", dt=dt)
     xt.info("env", env)
@@ -120,7 +120,10 @@ def test_LVAircraft_Altitude_GymEnv():
         ds = np.array([0, de])
         obs, reward, _, _ = env.step(ds)
 
+        env.render()
         rb.add(time=time, obs=obs, reward=reward)
+
+    env.close()
 
     result = xsim.Retriever(rb.buffer())
     result = pd.DataFrame({
@@ -133,7 +136,7 @@ def test_LVAircraft_Altitude_GymEnv():
     fig, axes = plt.subplots(nrows=2, sharex=True)
     result.plot(x="time", y=["command", "altitude"], ax=axes[0])
     result.plot(x="time", y="reward", ax=axes[1])
-    plt.show()
+    # plt.show()
 
 
 if __name__ == '__main__':
