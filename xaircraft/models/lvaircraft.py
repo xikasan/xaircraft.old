@@ -36,8 +36,8 @@ class LVAircraftEx(xs.BaseModel):
         # env params
         # action space
         # U = [throttle, elevator]
-        self.act_low  = np.array([np.min(range_throttle), np.min(range_elevator)])
-        self.act_high = np.array([np.max(range_throttle), np.max(range_elevator)])
+        self.act_low  = np.array([np.min(range_throttle), np.min(range_elevator)]).astype(dtype)
+        self.act_high = np.array([np.max(range_throttle), np.max(range_elevator)]).astype(dtype)
         # observation space
         self.obs_low, self.obs_high, _ = self.generate_inf_space(6)
 
@@ -80,7 +80,7 @@ class LVAircraftEx(xs.BaseModel):
 
     def construct_matrices(self):
         A = np.array([
-            #H  U   u        w         Theta     q
+            #U  H   u        w         Theta     q
             [0, 0,  1,       0,        0,        0],       # H
             [0, 0,  0,       1,        0,        0],       # U
             [0, 0, -0.0225,  0.0022, -32.3819,   0],       # u

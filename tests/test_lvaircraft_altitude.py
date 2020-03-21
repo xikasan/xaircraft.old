@@ -100,6 +100,7 @@ def test_LVAircraft_Altitude_GymEnv():
 
     env = gym.make("LVAircraftAltitude-v0", dt=dt)
     xt.info("env", env)
+    exit()
 
     Kp = -0.001
 

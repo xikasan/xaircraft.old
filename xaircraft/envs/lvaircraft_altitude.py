@@ -3,6 +3,7 @@
 import gym
 import numpy as np
 import xtools as xt
+import xtools.simulation as xs
 from .base import BaseEnv
 from ..models.lvaircraft import LVAircraftEx
 
@@ -35,10 +36,10 @@ class LVAircraftAltitudeV0(BaseEnv):
         self.target_altitude = 0
 
         # env params
-        self.action_space = self.generate_space(self._model.act_low, self._model.act_high)
+        self.action_space = xs.BaseModel.generate_space(self._model.act_low, self._model.act_high)
         self._obs_low  = np.concatenate([self._model.obs_low,  [self._model.H0 + np.min(self.range_target)]])
         self._obs_high = np.concatenate([self._model.obs_high, [self._model.H0 + np.max(self.range_target)]])
-        self.observation_space = self.generate_space(self._obs_low, self._obs_high)
+        self.observation_space = xs.BaseModel.generate_space(self._obs_low, self._obs_high)
 
         self.viewer = None
 
