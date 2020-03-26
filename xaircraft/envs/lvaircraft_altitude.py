@@ -14,6 +14,7 @@ class LVAircraftAltitudeV0(BaseEnv):
             self,
             dt,
             range_target=[-2000, 2000],
+            sampling_interval=1,
             name="LVAircraftAltitudeV0"
     ):
         super().__init__(dt, name=name)

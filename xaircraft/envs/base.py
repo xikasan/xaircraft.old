@@ -10,10 +10,13 @@ class BaseEnv(gym.Env):
     def __init__(
             self,
             dt,
+            dtype=np.float32,
             name="BaseEnv"
     ):
         super().__init__()
         self.name = name
+        self.dt = dt
+        self.dtype = np.float32
         self._act_low = 0
         self._act_high = 1
 

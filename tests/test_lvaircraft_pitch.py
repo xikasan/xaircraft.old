@@ -5,7 +5,57 @@ import pandas as pd
 import xtools as xt
 import xtools.simulation as xs
 from matplotlib import pyplot as plt
-from xaircraft.envs.lvaircraft_pitch import LVAircraftPitch
+import gym
+import xaircraft
+from xaircraft.envs.lvaircraft_pitch import LVAircraftPitch, LVAircraftPitchV0
+
+
+def test_LVAircraft_Pitch_GymEnv():
+    xt.info("test for LVAir Pitch gym")
+
+    dt = 0.1
+    due = 60
+
+    env = gym.make("LVAircraftPitch-v1", dt=dt)
+    xt.info("env", env)
+
+    Kp = -2.5
+
+    buf = xs.ReplayBuffer({
+        "time": 1,
+        "act": 2,
+        "obs": env.observation_size,
+        "reward": 1
+    }, capacity=int(due / dt + 1))
+
+    # reset env
+    obs = env.reset()
+    act = Kp * (obs[env.IX_C] - obs[env.IX_T])
+    act = np.array([0, act]).astype(np.float32)
+    buf.add(time=0, obs=obs, act=act, reward=env.calc_reward(obs))
+
+    for time in xs.generate_step_time(due, dt):
+        error = obs[env.IX_C] - obs[env.IX_T]
+        act = Kp * error
+        act = np.array([0, act]).astype(np.float32)
+        next_obs, reward, done, _ = env.step(act)
+
+        buf.add(time=time, act=act, obs=next_obs, reward=reward)
+        obs = next_obs
+
+    result = xs.Retriever(buf.buffer())
+    result = pd.DataFrame({
+        "time": result("time"),
+        "pitch": result("obs", idx=env.IX_T),
+        "target": result("obs", idx=env.IX_C),
+        "elevator": result("act", idx=1),
+        "reward": result("reward")
+    })
+    fig, axes = plt.subplots(nrows=3, sharex=True)
+    result.plot(x="time", y=["target", "pitch"], ax=axes[0])
+    result.plot(x="time", y="elevator", ax=axes[1])
+    result.plot(x="time", y="reward", ax=axes[2])
+    plt.show()
 
 
 def test_LVAircraftPitch():
@@ -46,4 +96,4 @@ def test_LVAircraftPitch():
 
 
 if __name__ == '__main__':
-    test_LVAircraftPitch()
+    test_LVAircraft_Pitch_GymEnv()
