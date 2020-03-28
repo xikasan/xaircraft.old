@@ -72,7 +72,6 @@ class LVAircraftPitchV0(BaseEnv):
     def get_observation(self):
         obs = self._model.get_observation()
         obs = obs[[self._model.IX_T, self._model.IX_q]]
-        print("get_observation de Env", obs)
         return np.concatenate([obs, [self.target_pitch]])
 
 
@@ -81,20 +80,23 @@ class LVAircraftPitchV1(LVAircraftPitchV0):
     def __init__(
             self,
             dt=0.1,
+            filter_tau=0.1,
             range_target=xt.d2r([-10, 10]),
-            target_change_inerval = 10.0,
+            target_change_interval = 10.0,
             name="LVAircraftPitchV1"
     ):
         super().__init__(dt, range_target, name)
         self._target_generator = xs.RandomRectangularCommand(
             np.max(range_target),
-            target_change_inerval,
+            target_change_interval,
         )
+        self._filter = xs.Filter2nd(self.dt, filter_tau)
         self._time = 0.0
 
     def reset(self):
         self._model.reset()
         self._target_generator.reset()
+        self._filter.reset()
         self.target_pitch = self._target_generator(0.0)
         return self.get_observation()
 
@@ -102,9 +104,13 @@ class LVAircraftPitchV1(LVAircraftPitchV0):
         # target change
         self._time = xt.round(self._time + self.dt, 2)
         self.target_pitch = self._target_generator(self._time)
+        self.target_pitch = self._filter(self.target_pitch)
 
         # simulation step
         return super().step(action)
+
+    def get_targets(self):
+        return self._filter.get_full_state()
 
 
 
