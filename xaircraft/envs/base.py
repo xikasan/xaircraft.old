@@ -16,7 +16,7 @@ class BaseEnv(gym.Env):
         super().__init__()
         self.name = name
         self.dt = dt
-        self.dtype = np.float32
+        self.dtype = dtype
         self._act_low = 0
         self._act_high = 1
 
