@@ -74,6 +74,14 @@ class LVAircraftPitchV0(BaseEnv):
         obs = obs[[self._model.IX_T, self._model.IX_q]]
         return np.concatenate([obs, [self.target_pitch]])
 
+    def get_targets(self):
+        return self._filter.get_full_state()
+
+    def get_state(self):
+        obs = self._model.get_observation()
+        obs = obs[[self._model.IX_T, self._model.IX_q]]
+        return obs
+
 
 class LVAircraftPitchV1(LVAircraftPitchV0):
 
@@ -108,9 +116,6 @@ class LVAircraftPitchV1(LVAircraftPitchV0):
 
         # simulation step
         return super().step(action)
-
-    def get_targets(self):
-        return self._filter.get_full_state()
 
 
 
